@@ -19,7 +19,7 @@ public class OrderItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")//하나의 order가 여러개 order_item 을 가질수 있다 (연관관계의 주인 order_item)
     private Order order;
 

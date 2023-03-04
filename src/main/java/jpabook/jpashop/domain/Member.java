@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity  //엔티티(테이블)로 선언, 엔티티객체는 테이블의 행
+//@Table(name = "") 직접 테이블 명을 지정 할 수 있다
 @Getter @Setter
 public class Member {
 
@@ -22,7 +23,7 @@ public class Member {
     @Embedded
     private Address address;
 
-    //하나의 Member에 다수의 Order가 있다, order에서는 입력
+    //하나의 Member에 다수의 Order가 있다, Order에서는 입력
     @OneToMany(mappedBy = "member") // order테이블에 있는 member 필드에 의해 정의된 내용을 보여줄것이다
     private List<Order> orders = new ArrayList<Order>();
 
