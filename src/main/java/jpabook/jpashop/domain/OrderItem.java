@@ -25,4 +25,32 @@ public class OrderItem {
 
     private int orderPrice; //주문당시 가격
     private int count; // 주문수량
+
+
+    //== 생성 메서드 ==//
+    //item 종류, 주문당시 가격, 개수
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(orderPrice);
+        orderItem.setCount(count);
+
+        item.removeStock(count); //재고 감소
+        return orderItem;
+    }
+
+    //== 비즈니스 로직 ==//
+    public void cancel(){
+        getItem().addStock(count); // 몇개를 주문했었는지 데이터를 넣어줘서 재고 에 더해준다
+        //상태는 부모클래스에서 참고할수있어서 새략
+
+    }
+    //==조회 로직==//
+    /*
+    * 주문상품 전체 가격 조회
+    * */
+    public int getTotalPrice(){
+        return getOrderPrice() * getCount();
+    }
+
 }

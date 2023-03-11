@@ -18,7 +18,7 @@ public class MemberRepository {
      * 향후에는 spring 기본 라이브러리에서도 지원할 예정
      * */
 
-//    @PersistenceContext //jpa를 상용하기 때문에 jpa 표준 어노테이션 사용 - 생성자 안쓰고
+//    @PersistenceContext //jpa를 사용하기 때문에 jpa 표준 어노테이션 사용 - 생성자 안쓰고
     //@Autowired // spring Data JPA 라이브러리를 사용하면 생성자 인젝션을 해줄수 있다
     private final EntityManager em;// 스프링이 엔티티메니저를 만들어 em 변수에 자동으로 주입(injection)해준다
 
@@ -26,7 +26,7 @@ public class MemberRepository {
 //    @PersistenceUnit
 //    private EntityManagerFactory emf;
 
-    // 생성자 injection을 해줄수 있다
+    // 생성자 injection을 해줄수 있다 - Autowired 사용시
 //    public MemberRepository(EntityManager em) {
 //        this.em = em;
 //    }

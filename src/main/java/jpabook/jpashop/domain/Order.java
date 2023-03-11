@@ -2,6 +2,7 @@ package jpabook.jpashop.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -79,4 +80,57 @@ public class Order {
         delivery.setOrder(this);
     }
 
+
+    //== 생성 메서드 ==// 핵심 비즈니스 로직 넣을것
+
+    //createOrder 하기 전에 OrderItem 생성되고 재고 감소 시킨후 createOrder 시킨다
+
+    //주문 생성 시킬때 생성하면서 로직을 모두 넣어두고 -> 수정시 여기만 로직을 보면 돤다 -
+    // 다른곳에서 setter 찍고 하지 않다보니 유지보수가 편하다
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems){
+        //order 가 연관관계 를 모드 세팅을해서 리턴해준다
+        //생성하는 시점을 변경해야한다면 new Order 부분만 변경시키면 된다
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for(OrderItem orderItem : orderItems){
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER); //처음 상태를 ORDER로 강제한다 - ENUM 으로 만들어둔 값을 사용
+        order.setOrderDate(LocalDateTime.now());//현재시간
+        return order;
+
+    }
+
+    /*
+    * 주문 취소
+    * */
+    //이미 주문시 취소되는 로직이 엔티티에 있다
+    public void cancel(){
+        if(delivery.getStatus() == DeliveryStatus.COMP){
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        }
+
+        this.setStatus(OrderStatus.CANCEL);
+
+        for (OrderItem orderItem : orderItems){
+            orderItem.cancel(); // orderItem 쪽에 취소를 넣어 수량 변경 -> cancel 메서드에 구현되어있다
+        }
+    }
+
+    //== 조회 로직 ==//
+    /*
+    * 전체 주문 가격 조회
+    * */
+    //getTotalPrice 에 로직 구현되어있다
+    public int getTotalPrice(){
+//        int totalPrice = 0;
+//        for(OrderItem orderItem : orderItems){
+//            // 주문 수량 * 주문당시 가격 = 총 가격
+//            totalPrice += orderItem.getTotalPrice();
+//
+//        }
+        //해당 타입으로 꺼내온다 -> :: 으로 해당 타입의 메서드에 접근한다 -> mapToInt 로 int 값을 map에 넣는다
+        return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
+    }
 }
