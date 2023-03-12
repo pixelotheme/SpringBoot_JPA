@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.aspectj.weaver.ast.Or;
 
@@ -15,6 +17,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)// new 로 생성하여 값을 넣을수 없다
 public class Order {
 
     @Id @GeneratedValue
@@ -106,6 +109,7 @@ public class Order {
     * 주문 취소
     * */
     //이미 주문시 취소되는 로직이 엔티티에 있다
+    //엔티티 안에서 데이터만 바꾸면 JPA가 DirtyChecking(데이터 변경감지)을 통해 변경된 부분은 찾아 DB에 update 쿼리가 자동으로 나라간다
     public void cancel(){
         if(delivery.getStatus() == DeliveryStatus.COMP){
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
